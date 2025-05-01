@@ -1,0 +1,66 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import classification_report, roc_auc_score
+from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix, RocCurveDisplay
+
+df = pd.read_csv("../dataset/WA_Fn-UseC_-HR-Employee-Attrition.csv")
+
+le = LabelEncoder()
+df['Attrition'] = le.fit_transform(df['Attrition'])  # Yes -> 1, No -> 0
+
+# To check the if the class is imbalanced or not
+sns.countplot(x='Attrition', data=df)
+plt.title("Attrition Class Distribution")
+plt.xticks([0, 1], ['No', 'Yes'])
+plt.xlabel("Attrition")
+plt.ylabel("Count")
+plt.show()
+
+df = pd.get_dummies(df, drop_first=True)
+
+X = df.drop("Attrition", axis=1)
+y = df["Attrition"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+model = DecisionTreeClassifier(random_state=42,class_weight='balanced')
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+y_proba = model.predict_proba(X_test)[:, 1]
+
+print("Classification Report:\n", classification_report(y_test, y_pred))
+print("ROC AUC Score:", roc_auc_score(y_test, y_proba))
+
+# Confusion Matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(6, 4))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['No', 'Yes'], yticklabels=['No', 'Yes'])
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.show()
+
+# ROC Curve
+RocCurveDisplay.from_estimator(model, X_test, y_test)
+plt.title('ROC Curve')
+plt.show()
+
+# This is for the users to understand the feature importance 
+feature_importances = pd.Series(model.feature_importances_, index=X.columns)
+top_features = feature_importances.sort_values(ascending=False).head(10)
+
+plt.figure(figsize=(8, 5))
+sns.barplot(x=top_features.values, y=top_features.index)
+plt.title("Top 10 Important Features in Decision Tree")
+plt.xlabel("Feature Importance")
+plt.ylabel("Feature")
+plt.tight_layout()
+plt.show()
