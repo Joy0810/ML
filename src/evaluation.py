@@ -2,14 +2,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Example of metrics for each model (replace with actual results from your scripts)
-models = ['Decision Tree', 'SVM', 'Random Forest', 'Random Forest + SMOTE', 'Random Forest + XGBoost']
+models = ['Decision Tree', 'SVM', 'Random Forest', 'Random Forest + SMOTE', 'XGBoost']
 
 # Accuracy, Precision, Recall, F1-Score, and ROC AUC
-accuracy = [0.84, 0.84, 0.81, 0.81, 0.84]  # Replace with actual accuracy values
-precision = [0.84, 0.84, 0.86, 0.86, 0.89]  # Replace with actual precision values
-recall = [0.84, 0.84, 0.92, 0.92, 0.92]  # Replace with actual recall values
-f1_score = [0.84, 0.84, 0.89, 0.89, 0.91]  # Replace with actual F1-score values
-roc_auc = [0.74, 0.74, 0.74, 0.74, 0.74]  # Replace with actual ROC AUC values
+accuracy = [0.78, 0.47, 0.84, 0.81, 0.84]
+precision = [0.88, 0.90, 0.85, 0.86, 0.89]
+recall = [0.85, 0.42, 0.99, 0.92, 0.92]
+f1_score = [0.87, 0.57, 0.91, 0.89, 0.91]
+roc_auc = [0.63, 0.64, 0.76, 0.74, 0.74]
+
 
 # Plotting the comparison
 x = np.arange(len(models))  # the label locations
@@ -25,7 +26,7 @@ rects4 = ax.bar(x + width, f1_score, width, label='F1-Score', color='lightskyblu
 rects5 = ax.bar(x + 2*width, roc_auc, width, label='ROC AUC', color='orange')
 
 # Highlight the best model
-best_model_index = 4  # Let's assume Random Forest + XGBoost is the best model based on some criteria
+best_model_index = 4 
 
 # Change the color of the best model's bars
 rects1[best_model_index].set_color('darkblue')
