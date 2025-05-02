@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix, RocCurveDisplay
 from sklearn.preprocessing import LabelEncoder
 from imblearn.over_sampling import SMOTE
@@ -41,30 +40,10 @@ X_train, X_test, y_train, y_test = train_test_split(
 smote = SMOTE(random_state=42)
 X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
 
-# Random Forest Classifier
-rf = RandomForestClassifier(random_state=42)
-
-# Define parameter grid for Random Forest
-rf_param_grid = {
-    'n_estimators': [100, 200],
-    'max_depth': [None, 10, 20],
-    'min_samples_split': [2, 5],
-    'min_samples_leaf': [1, 2],
-    'class_weight': ['balanced']
-}
-
-# Grid search for Random Forest
-rf_grid_search = GridSearchCV(estimator=rf, param_grid=rf_param_grid,
-                              scoring='roc_auc', cv=5, n_jobs=-1, verbose=1)
-rf_grid_search.fit(X_train_smote, y_train_smote)
-
-# Best Random Forest parameters
-print("Best Parameters for Random Forest:\n", rf_grid_search.best_params_)
-
 # XGBoost Classifier
 xgb_model = XGBClassifier(random_state=42, eval_metric='logloss')
 
-# Reduced parameter grid for XGBoost
+# Parameter grid for XGBoost
 xgb_param_grid = {
     'n_estimators': [100, 200],
     'max_depth': [3, 5],
@@ -74,55 +53,33 @@ xgb_param_grid = {
     'scale_pos_weight': [1, 2]
 }
 
-# Use RandomizedSearchCV instead of GridSearchCV
+# Randomized search
 xgb_random_search = RandomizedSearchCV(
     estimator=xgb_model,
     param_distributions=xgb_param_grid,
     scoring='roc_auc',
     cv=5,
-    n_iter=10,  # Number of random combinations to try
+    n_iter=10,
     n_jobs=-1,
     random_state=42,
     verbose=1
 )
 
-# Fit the model with early stopping
 xgb_random_search.fit(X_train_smote, y_train_smote)
 
 # Best XGBoost parameters
 print("Best Parameters for XGBoost:\n", xgb_random_search.best_params_)
 
-# Combine both models (Random Forest + XGBoost)
-# Using Random Forest best model
-rf_best_model = rf_grid_search.best_estimator_
-
-# Using XGBoost best model
+# Best model
 xgb_best_model = xgb_random_search.best_estimator_
-
-# Predictions using Random Forest
-y_pred_rf = rf_best_model.predict(X_test)
-y_proba_rf = rf_best_model.predict_proba(X_test)[:, 1]
 
 # Predictions using XGBoost
 y_pred_xgb = xgb_best_model.predict(X_test)
 y_proba_xgb = xgb_best_model.predict_proba(X_test)[:, 1]
 
-# Evaluation for Random Forest
-print("Random Forest - Classification Report:\n", classification_report(y_test, y_pred_rf))
-print("Random Forest - ROC AUC Score:", roc_auc_score(y_test, y_proba_rf))
-
 # Evaluation for XGBoost
 print("XGBoost - Classification Report:\n", classification_report(y_test, y_pred_xgb))
 print("XGBoost - ROC AUC Score:", roc_auc_score(y_test, y_proba_xgb))
-
-# Confusion Matrix for Random Forest
-conf_matrix_rf = confusion_matrix(y_test, y_pred_rf)
-plt.figure(figsize=(6, 4))
-sns.heatmap(conf_matrix_rf, annot=True, fmt='d', cmap='Blues', xticklabels=['No', 'Yes'], yticklabels=['No', 'Yes'])
-plt.title('Confusion Matrix - Random Forest')
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
-plt.show()
 
 # Confusion Matrix for XGBoost
 conf_matrix_xgb = confusion_matrix(y_test, y_pred_xgb)
@@ -133,26 +90,9 @@ plt.xlabel('Predicted')
 plt.ylabel('Actual')
 plt.show()
 
-# ROC Curve for Random Forest
-RocCurveDisplay.from_estimator(rf_best_model, X_test, y_test)
-plt.title('ROC Curve - Random Forest')
-plt.show()
-
 # ROC Curve for XGBoost
 RocCurveDisplay.from_estimator(xgb_best_model, X_test, y_test)
 plt.title('ROC Curve - XGBoost')
-plt.show()
-
-# Feature Importance for Random Forest
-importances_rf = pd.Series(rf_best_model.feature_importances_, index=X.columns)
-top_features_rf = importances_rf.sort_values(ascending=False).head(10)
-
-plt.figure(figsize=(8, 5))
-sns.barplot(x=top_features_rf.values, y=top_features_rf.index)
-plt.title("Top 10 Important Features - Random Forest")
-plt.xlabel("Feature Importance")
-plt.ylabel("Feature")
-plt.tight_layout()
 plt.show()
 
 # Feature Importance for XGBoost
@@ -166,3 +106,16 @@ plt.xlabel("Feature Importance")
 plt.ylabel("Feature")
 plt.tight_layout()
 plt.show()
+
+# Save predicted attrition probabilities
+final_model = xgb_best_model
+X_all = df.drop("Attrition", axis=1)
+proba_all = final_model.predict_proba(X_all)[:, 1]
+
+output_df = pd.DataFrame({
+    "EmployeeIndex": X_all.index,
+    "Attrition_Probability": proba_all
+})
+
+output_df.to_csv("part1_output.txt", index=False, sep='\t')
+print("Predicted attrition probabilities saved to part1_output.txt")
