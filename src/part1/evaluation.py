@@ -1,75 +1,47 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Example of metrics for each model (replace with actual results from your scripts)
-models = ['Decision Tree', 'SVM', 'Random Forest', 'Random Forest + SMOTE', 'XGBoost']
+# Model names and their respective scores
+models = ['Logistic Regression', 'Decision Tree', 'SVM', 'Random Forest', 'RF + SMOTE', 'XGBoost']
+accuracy =  [0.88, 0.77, 0.82, 0.84, 0.82, 0.85]
+precision = [0.72, 0.27, 0.45, 0.44, 0.41, 0.54]
+recall =    [0.41, 0.26, 0.53, 0.09, 0.26, 0.45]
+f1_score =  [0.52, 0.26, 0.49, 0.14, 0.32, 0.49]
+roc_auc =   [0.82, 0.56, 0.79, 0.75, 0.75, 0.75]
 
-# Accuracy, Precision, Recall, F1-Score, and ROC AUC
-accuracy = [0.78, 0.47, 0.84, 0.81, 0.84]
-precision = [0.88, 0.90, 0.85, 0.86, 0.89]
-recall = [0.85, 0.42, 0.99, 0.92, 0.92]
-f1_score = [0.87, 0.57, 0.91, 0.89, 0.91]
-roc_auc = [0.63, 0.64, 0.76, 0.74, 0.74]
+# Zip and sort by F1 Score
+data = list(zip(models, accuracy, precision, recall, f1_score, roc_auc))
+sorted_data = sorted(data, key=lambda x: x[4], reverse=True)
 
+# Unzip sorted results
+models_sorted, accuracy, precision, recall, f1_score, roc_auc = zip(*sorted_data)
+metrics = [accuracy, precision, recall, f1_score, roc_auc]
+metric_labels = ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'ROC AUC']
+colors = ['skyblue', 'lightgreen', 'salmon', 'lightsteelblue', 'orange']
 
-# Plotting the comparison
-x = np.arange(len(models))  # the label locations
-width = 0.15  # the width of the bars
-
+# Plot setup
 fig, ax = plt.subplots(figsize=(12, 8))
+bar_height = 0.12
+y = np.arange(len(models_sorted))
 
-# Plot each metric with distinct colors
-rects1 = ax.bar(x - 2*width, accuracy, width, label='Accuracy', color='lightblue')
-rects2 = ax.bar(x - width, precision, width, label='Precision', color='lightgreen')
-rects3 = ax.bar(x, recall, width, label='Recall', color='lightcoral')
-rects4 = ax.bar(x + width, f1_score, width, label='F1-Score', color='lightskyblue')
-rects5 = ax.bar(x + 2*width, roc_auc, width, label='ROC AUC', color='orange')
+# Plot and annotate
+for i, (metric, color) in enumerate(zip(metrics, colors)):
+    bars = ax.barh(y + i * bar_height, metric, bar_height, label=metric_labels[i], color=color)
+    for bar in bars:
+        width = bar.get_width()
+        ax.text(width + 0.01, bar.get_y() + bar.get_height()/2,
+                f'{width:.2f}', va='center', fontsize=9)
 
-# Highlight the best model
-best_model_index = 4 
+# Aesthetics
+ax.set_yticks(y + 2 * bar_height)
+ax.set_yticklabels(models_sorted)
+ax.set_xlabel('Score')
+ax.set_xlim(0, 1.05)
+ax.set_title('Model Comparison (Sorted by F1 Score)', fontsize=16)
+ax.invert_yaxis()
+ax.grid(True, axis='x', linestyle='--', alpha=0.6)
+ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.08), ncol=3, fontsize=10)
 
-# Change the color of the best model's bars
-rects1[best_model_index].set_color('darkblue')
-rects2[best_model_index].set_color('darkgreen')
-rects3[best_model_index].set_color('darkred')
-rects4[best_model_index].set_color('darkcyan')
-rects5[best_model_index].set_color('darkorange')
-
-# Add some text for labels, title, and custom x-axis tick labels
-ax.set_xlabel('Models', fontsize=14)
-ax.set_ylabel('Scores', fontsize=14)
-ax.set_title('Model Comparison (Accuracy, Precision, Recall, F1-Score, ROC AUC)', fontsize=16)
-ax.set_xticks(x)
-ax.set_xticklabels(models, fontsize=12)
-ax.legend(fontsize=12)
-
-# Add gridlines for better readability
-ax.grid(True, axis='y', linestyle='--', alpha=0.7)
-
-# Autolabel function to display the value on top of the bars
-def autolabel(rects):
-    for rect in rects:
-        height = rect.get_height()
-        ax.annotate('%.2f' % height,
-                    xy=(rect.get_x() + rect.get_width() / 2, height),
-                    xytext=(0, 3),  # 3 points vertical offset
-                    textcoords="offset points",
-                    ha='center', va='bottom', fontsize=10)
-
-# Call the autolabel function
-autolabel(rects1)
-autolabel(rects2)
-autolabel(rects3)
-autolabel(rects4)
-autolabel(rects5)
-
-# Add annotation to highlight the best model
-ax.annotate('Best Model', 
-            xy=(x[best_model_index], max(f1_score[best_model_index], precision[best_model_index], recall[best_model_index], accuracy[best_model_index])), 
-            xytext=(0, 10), 
-            textcoords='offset points', 
-            ha='center', fontsize=12, color='black', weight='bold', arrowprops=dict(arrowstyle='->', color='black'))
-
-# Show the plot
 plt.tight_layout()
 plt.show()
+

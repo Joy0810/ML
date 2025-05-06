@@ -24,6 +24,7 @@ plt.xlabel("Attrition")
 plt.ylabel("Count")
 plt.show()
 
+df = df.drop(['EmployeeNumber', 'Over18', 'StandardHours', 'EmployeeCount'], axis=1)
 # One-hot encode categorical features
 df = pd.get_dummies(df, drop_first=True)
 

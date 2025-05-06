@@ -21,10 +21,14 @@ plt.xlabel("Attrition")
 plt.ylabel("Count")
 plt.show()
 
+df = df.drop(['EmployeeNumber', 'Over18', 'StandardHours', 'EmployeeCount'], axis=1)
+
 df = pd.get_dummies(df, drop_first=True)
 
 X = df.drop("Attrition", axis=1)
 y = df["Attrition"]
+
+
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
@@ -41,16 +45,42 @@ print("ROC AUC Score:", roc_auc_score(y_test, y_proba))
 
 # Confusion Matrix
 conf_matrix = confusion_matrix(y_test, y_pred)
-plt.figure(figsize=(6, 4))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['No', 'Yes'], yticklabels=['No', 'Yes'])
-plt.title('Confusion Matrix')
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
-plt.show()
+sns.set(style='whitegrid')
 
+# Create figure
+plt.figure(figsize=(6, 5))
+ax = sns.heatmap(
+    conf_matrix,
+    annot=True,
+    fmt='d',
+    cmap='Blues',
+    cbar=False,
+    linewidths=0.5,
+    linecolor='gray',
+    square=True,
+    xticklabels=['No', 'Yes'],
+    yticklabels=['No', 'Yes'],
+    annot_kws={"size": 14, "weight": "bold"}
+)
+
+# Formatting
+ax.set_title('Confusion Matrix – Decision Tree', fontsize=16, weight='bold', pad=20)
+ax.set_xlabel('Predicted Label', fontsize=12)
+ax.set_ylabel('Actual Label', fontsize=12)
+
+# Move x-axis label and ticks to top
+ax.xaxis.set_label_position('top')
+ax.xaxis.tick_top()
+
+# Increase font size of tick labels
+ax.tick_params(axis='both', labelsize=12)
+
+# Tight layout for report-quality spacing
+plt.tight_layout()
+plt.show()
 # ROC Curve
 RocCurveDisplay.from_estimator(model, X_test, y_test)
-plt.title('ROC Curve')
+plt.title('ROC Curve-Decision Tree')
 plt.show()
 
 # This is for the users to understand the feature importance 

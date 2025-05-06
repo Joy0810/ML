@@ -1,17 +1,17 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix, RocCurveDisplay
-from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix, RocCurveDisplay
 
 # Load dataset
 df = pd.read_csv("../../dataset/WA_Fn-UseC_-HR-Employee-Attrition.csv")
 
-# Label Encoding Attrition
+# Label Encode target
 le = LabelEncoder()
 df['Attrition'] = le.fit_transform(df['Attrition'])  # Yes -> 1, No -> 0
 
@@ -23,24 +23,28 @@ plt.xlabel("Attrition")
 plt.ylabel("Count")
 plt.show()
 
+# Drop irrelevant columns
 df = df.drop(['EmployeeNumber', 'Over18', 'StandardHours', 'EmployeeCount'], axis=1)
-# One-hot encode categorical features
+
+# One-hot encode categorical variables
 df = pd.get_dummies(df, drop_first=True)
 
-# Split features and labels
+# Feature-target split
 X = df.drop("Attrition", axis=1)
 y = df["Attrition"]
 
-
-
-# Train-test split with stratification
+# Train-test split
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
+    X, y, test_size=0.3, random_state=42, stratify=y
 )
 
+# Scale features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
 
-# Random Forest Classifier with class_weight balanced
-model = RandomForestClassifier(class_weight='balanced', random_state=42)
+# Logistic Regression Model
+model = LogisticRegression(max_iter=100000)
 model.fit(X_train, y_train)
 
 # Predictions
@@ -49,7 +53,7 @@ y_proba = model.predict_proba(X_test)[:, 1]
 
 # Evaluation
 print("Classification Report:\n", classification_report(y_test, y_pred))
-print("ROC AUC Score:", roc_auc_score(y_test, y_proba))
+print("ROC AUC Score:", round(roc_auc_score(y_test, y_proba), 4))
 
 # Confusion Matrix
 conf_matrix = confusion_matrix(y_test, y_pred)
@@ -72,7 +76,7 @@ ax = sns.heatmap(
 )
 
 # Formatting
-ax.set_title('Confusion Matrix – Random Forest', fontsize=16, weight='bold', pad=20)
+ax.set_title('Confusion Matrix – Logistic Regression', fontsize=16, weight='bold', pad=20)
 ax.set_xlabel('Predicted Label', fontsize=12)
 ax.set_ylabel('Actual Label', fontsize=12)
 
@@ -86,20 +90,7 @@ ax.tick_params(axis='both', labelsize=12)
 # Tight layout for report-quality spacing
 plt.tight_layout()
 plt.show()
-
 # ROC Curve
 RocCurveDisplay.from_estimator(model, X_test, y_test)
-plt.title('ROC Curve - Random Forest')
-plt.show()
-
-# Feature Importance
-importances = pd.Series(model.feature_importances_, index=X.columns)
-top_features = importances.sort_values(ascending=False).head(10)
-
-plt.figure(figsize=(8, 5))
-sns.barplot(x=top_features.values, y=top_features.index)
-plt.title("Top 10 Important Features - Random Forest")
-plt.xlabel("Feature Importance")
-plt.ylabel("Feature")
-plt.tight_layout()
+plt.title('ROC Curve - Logistic Regression')
 plt.show()
