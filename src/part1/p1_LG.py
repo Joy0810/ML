@@ -15,7 +15,7 @@ df = pd.read_csv("../../dataset/WA_Fn-UseC_-HR-Employee-Attrition.csv")
 le = LabelEncoder()
 df['Attrition'] = le.fit_transform(df['Attrition'])  # Yes -> 1, No -> 0
 
-# Optional: Visualize class imbalance
+# Visualize class imbalance
 sns.countplot(x='Attrition', data=df)
 plt.title("Attrition Class Distribution")
 plt.xticks([0, 1], ['No', 'Yes'])
@@ -43,23 +43,20 @@ scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-# Logistic Regression Model
+# Train Logistic Regression model
 model = LogisticRegression(max_iter=100000)
 model.fit(X_train, y_train)
 
-# Predictions
+# Evaluate model on test set
 y_pred = model.predict(X_test)
-y_proba = model.predict_proba(X_test)[:, 1]
+y_proba_test = model.predict_proba(X_test)[:, 1]
 
-# Evaluation
 print("Classification Report:\n", classification_report(y_test, y_pred))
-print("ROC AUC Score:", round(roc_auc_score(y_test, y_proba), 4))
+print("ROC AUC Score:", round(roc_auc_score(y_test, y_proba_test), 4))
 
 # Confusion Matrix
 conf_matrix = confusion_matrix(y_test, y_pred)
 sns.set(style='whitegrid')
-
-# Create figure
 plt.figure(figsize=(6, 5))
 ax = sns.heatmap(
     conf_matrix,
@@ -74,23 +71,28 @@ ax = sns.heatmap(
     yticklabels=['No', 'Yes'],
     annot_kws={"size": 14, "weight": "bold"}
 )
-
-# Formatting
 ax.set_title('Confusion Matrix – Logistic Regression', fontsize=16, weight='bold', pad=20)
 ax.set_xlabel('Predicted Label', fontsize=12)
 ax.set_ylabel('Actual Label', fontsize=12)
-
-# Move x-axis label and ticks to top
 ax.xaxis.set_label_position('top')
 ax.xaxis.tick_top()
-
-# Increase font size of tick labels
 ax.tick_params(axis='both', labelsize=12)
-
-# Tight layout for report-quality spacing
 plt.tight_layout()
 plt.show()
+
 # ROC Curve
 RocCurveDisplay.from_estimator(model, X_test, y_test)
 plt.title('ROC Curve - Logistic Regression')
 plt.show()
+
+# Predict on entire dataset (all 1470 rows)
+X_all_scaled = scaler.transform(X)
+y_proba_all = model.predict_proba(X_all_scaled)[:, 1]
+
+# Save probabilities for all employees
+output_df = pd.DataFrame({
+    "EmployeeIndex": X.index,
+    "Attrition_Probability": y_proba_all
+})
+output_df.to_csv("part1lg_output.txt", index=False, sep='\t')
+print("Predicted attrition probabilities saved to part1lg_output.txt")
