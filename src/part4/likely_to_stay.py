@@ -1,5 +1,3 @@
-# src/part4/likely_to_stay.py
-
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -59,49 +57,16 @@ print(f"\nBest F1 threshold: {best_threshold:.2f} (F1={best_f1:.3f}, Precision={
 # 6. Now flag “likely to stay” using this best threshold
 df['likely_to_stay'] = df['P_stay'] >= best_threshold
 
-
-
-# --- ADDITIONAL: Attach Part 3 Predicted Salaries from TWO CSVs ---
-
-perf_csv = (
-    base_dir.parent / 'part3' / 'SVR' / 'Linear' /
-    'linearsvr_predicted_futuresalary_performance_based.csv'
-)
-inc_csv = (
-    base_dir.parent / 'part3' / 'RandomForest' /
-    'rf_predictions_increment_based.csv'
-)
-
-perf_df = pd.read_csv(perf_csv).rename(
-    columns={'Predicted_FutureSalary_PerformanceBased': 'Predicted_PerfBased'}
-)
-inc_df  = pd.read_csv(inc_csv).rename(
-    columns={'Predicted_FutureSalary_from_Increment': 'Predicted_FromIncrement'}
-)
-
-stay_idx = list(df.index[df['likely_to_stay']])
-for emp_id, perf_val, inc_val in zip(
-        stay_idx,
-        perf_df['Predicted_PerfBased'].values,
-        inc_df['Predicted_FromIncrement'].values,
-    ):
-    df.at[emp_id, 'Predicted_PerfBased']     = perf_val
-    df.at[emp_id, 'Predicted_FromIncrement'] = inc_val
-
-stay_out = df[df['likely_to_stay']]
-
-# 7. Save results to CSV
-target = base_dir / 'likely_to_stay_salaries.csv'
-stay_out[['P_stay', 'Predicted_PerfBased', 'Predicted_FromIncrement']].to_csv(target)
-print(f"\nResults for likely-to-stay employees written to: {target}")
-
-# 8. Visualization
-
-# Pie chart: stay vs leave
+# --- Pie Chart: Stay vs. Leave ---
 counts = df['likely_to_stay'].value_counts()
 plt.figure()
-plt.pie(counts.values, labels=['Stay','Leave'], autopct='%1.1f%%')
-plt.title('Probability of Employees Staying vs Leaving')
+plt.pie(
+    counts.values,
+    labels=['Stay', 'Leave'],
+    autopct='%1.1f%%',
+    startangle=90,
+    wedgeprops={'edgecolor': 'white'}
+)
+plt.title(f'Pie Chart of Stay vs. Leave (Threshold = {best_threshold:.2f})')
+plt.axis('equal')
 plt.show()
-
-
