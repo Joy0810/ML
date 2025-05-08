@@ -197,6 +197,62 @@ Additionally, a **Linear Regression** model is used to analyze the relationship 
 
 ---
 
+## Part 3: Salary Prediction using Regression Models
+
+---
+
+### Objective
+
+Develop multiple regression models to predict employee **future salaries** using various features from the HR dataset. The focus is on comparing prediction accuracy between **fixed growth** and **performance-based growth** approaches.
+
+---
+
+### Dataset
+
+- **Base Dataset:** `dataset/WA_Fn-UseC_-HR-Employee-Attrition.csv`
+- **Simulated Salary Columns:** Augmented in Part 2 for fixed and performance-based salaries.
+- **Target Column:** `PredictedFutureSalary`
+
+---
+
+### Models Used
+
+- **Random Forest Regressor**
+- **Lasso Regression**
+- **Ridge Regression**
+- **Support Vector Regressor (SVR)**:
+  - RBF Kernel
+  - Linear Kernel
+  - Polynomial Kernel
+
+---
+
+### Evaluation Metrics
+
+- **R² Score** 
+- **RMSE** (Root Mean Square Error)
+- **MAPE** (Mean Absolute Percentage Error)
+
+---
+
+### Output Files
+
+- Model plots (bar charts) saved in `images/part3/`
+- Predictions saved for both growth approaches
+- Code location: `src/part3`
+
+---
+
+### Python Libraries Used
+
+- **pandas**
+- **numpy**
+- **scikit-learn**
+- **matplotlib**
+- **seaborn**
+
+---
+
 ## Part 4: Stay Probability Thresholding & Visualization
 
 ---
