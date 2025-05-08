@@ -6,34 +6,55 @@
 
 ```
 hr/
-│
 ├── dataset/
-│ └── WA_Fn-UseC_-HR-Employee-Attrition.csv
+│   └── WA_Fn-UseC_-HR-Employee-Attrition.csv
 │
 ├── images/
-│ └── part1/
-│ ├── (Sub-folders covering images for Decision_tree, Logistic_regression, Random_forest, SVM, XG_Boost)
-│ ├── Class_importance.png
-│ ├── part1_main.png    (Logistic Regression performs the best)
-│ └── part1_XG.png    (Without Logistic regression XG Boost performs better)
-│ └── part2/
-│ ├── salary_distribution.png (KDE plot comparing salary distributions)
-│ └── part3/
+│   ├── part1/
+│   │   ├── Decision_tree/…
+│   │   ├── Logistic_regression/…
+│   │   ├── Random_forest/…
+│   │   ├── SVM/…
+│   │   ├── XG_Boost/…
+│   │   ├── Class_importance.png
+│   │   ├── part1_main.png
+│   │   └── part1_XG.png
+│   │
+│   ├── part2/
+│   │   └── salary_distribution.png
+│   │
+│   ├── part4/
+│   │   └── StayVsLeave.png
+│   │
+│   └── part5/
+│       ├── FixedBasedLoss.png
+│       └── performanceBasedLoss.png
 │
-├── src/
-│ └── part1/
-│ ├── evaluation.py   (To evaluate)
-│ ├── p1_DT.py   (Decision Tree)
-│ ├── p1_LG.py   (Logistic Regression)
-│ ├── p1_RF.py   (Random Forest)
-│ ├── p1_RF_smt.py   (Random Forest + SMOTE)
-│ ├── p1_SVM.py   (SVM)
-│ ├── p1_XG.py   (XGBoost)
-│ ├── part1lg_output.txt   (Logistic Regression Output)
-│ └── part1XG_output.txt   (XGBoost Output)
-│ └── part2/
-│ ├── augmented_salary_data.csv     (Augmented dataset with future salary predictions)
-│ └── p2.py     (Simulate Future Salaries)
+└── src/
+    ├── part1/
+    │   ├── evaluation.py
+    │   ├── p1_DT.py
+    │   ├── p1_LG.py
+    │   ├── p1_RF.py
+    │   ├── p1_RF_smt.py
+    │   ├── p1_SVM.py
+    │   ├── p1_XG.py
+    │   ├── part1lg_output.txt
+    │   └── part1XG_output.txt
+    │
+    ├── part2/
+    │   ├── augmented_salary_data.csv
+    │   └── p2.py
+    │
+    ├── part4/
+    │   ├── likely_to_stay_salaries.csv
+    │   └── likely_to_stay.py
+    │
+    └── part5/
+        ├── expected_loss_fixed.csv
+        ├── expected_loss_performance.csv
+        ├── expectedLoss.py
+        └── plot_expected_loss.py
 
 ```
 ---
