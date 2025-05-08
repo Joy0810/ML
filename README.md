@@ -276,9 +276,16 @@ Develop multiple regression models to predict employee **future salaries** using
 
 ### Evaluation Metrics
 
-- **R² Score** 
-- **RMSE** (Root Mean Square Error)
+- **R² Score**  
+- **RMSE** (Root Mean Square Error)  
 - **MAPE** (Mean Absolute Percentage Error)
+
+---
+
+### Model Performance
+
+- For **performance-based salary growth**, **SVR with linear kernel** performed the best.  
+- For **fixed salary growth**, **Random Forest Regressor** delivered the most accurate results.
 
 ---
 
@@ -286,7 +293,7 @@ Develop multiple regression models to predict employee **future salaries** using
 
 - Model plots (bar charts) saved in `images/part3/`
 - Predictions saved for both growth approaches
-- Code location: `src/part3`
+- Code location: `src/part3/`
 
 ---
 
