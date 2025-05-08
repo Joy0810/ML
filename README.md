@@ -25,9 +25,9 @@ ML/
 │   │   ├── Random_forest/
 │   │   ├── SVM/
 │   │   ├── XG_Boost/
-│   │   │   ├── Class_importance.png
-│   │   │   ├── part1_main.png
-│   │   │   └── part1_XG.png
+│   │   ├── Class_importance.png
+│   │   ├── part1_main.png
+│   │   └── part1_XG.png
 │   │
 │   ├── part2/
 │   │   └── salary_distribution.png
@@ -35,10 +35,10 @@ ML/
 │   ├── part3/
 │   │   ├── eval_fg/
 │   │   ├── eval_pb/
-│   │   └── images_LR_RF_RR_SVR/
-│   │       ├── linearsvr_performance_based_actual_vs_predicted.png
-│   │       ├── metric importance.jpeg
-│   │       └── rf_modelA_futuresalary_actual_vs_predicted.png
+│   │   ├── images_LR_RF_RR_SVR/
+│   │   ├── linearsvr_performance_based_actual_vs_predicted.png
+│   │   ├── metric importance.jpeg
+│   │   └── rf_modelA_futuresalary_actual_vs_predicted.png
 │   │
 │   ├── part4/
 │   │   └── StayVsLeave.png
