@@ -120,7 +120,7 @@ The goal of Part 1 is to build and evaluate multiple classification models to pr
 
 ---
 
-## 📦 Python Libraries Used (For Part 1)
+## Python Libraries Used (For Part 1)
 
 - **Data Manipulation**: 
     - `pandas`
