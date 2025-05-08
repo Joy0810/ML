@@ -1,5 +1,43 @@
 #  Multi-Step Regression + Classification for Employee Attrition & Salary Estimation
 
+## Folder Structure:
+
+---
+
+```
+hr/
+│
+├── dataset/
+│ └── WA_Fn-UseC_-HR-Employee-Attrition.csv
+│
+├── images/
+│ └── part1/
+│ ├── (Sub-folders covering images for Decision_tree, Logistic_regression, Random_forest, SVM, XG_Boost)
+│ ├── Class_importance.png
+│ ├── part1_main.png    (Logistic Regression performs the best)
+│ └── part1_XG.png    (Without Logistic regression XG Boost performs better)
+│ └── part2/
+│ ├── salary_distribution.png (KDE plot comparing salary distributions)
+│ └── part3/
+│
+├── src/
+│ └── part1/
+│ ├── evaluation.py   (To evaluate)
+│ ├── p1_DT.py   (Decision Tree)
+│ ├── p1_LG.py   (Logistic Regression)
+│ ├── p1_RF.py   (Random Forest)
+│ ├── p1_RF_smt.py   (Random Forest + SMOTE)
+│ ├── p1_SVM.py   (SVM)
+│ ├── p1_XG.py   (XGBoost)
+│ ├── part1lg_output.txt   (Logistic Regression Output)
+│ └── part1XG_output.txt   (XGBoost Output)
+│ └── part2/
+│ ├── augmented_salary_data.csv     (Augmented dataset with future salary predictions)
+│ └── p2.py     (Simulate Future Salaries)
+
+```
+---
+
 ## Part 1: Employee Attrition Prediction (Classification)
 
 ---
@@ -94,8 +132,6 @@ The goal of Part 1 is to build and evaluate multiple classification models to pr
 
  ---
 
-# Multi-Step Regression + Classification for Employee Attrition & Salary Estimation
-
 ## Part 2: Simulating Future Salaries (Data Augmentation)
 
 ---
@@ -140,37 +176,105 @@ Additionally, a **Linear Regression** model is used to analyze the relationship 
 
 ---
 
-###  Folder Structure Overview
+## Part 4: Stay Probability Thresholding & Visualization
 
-```
-hr/
-│
-├── dataset/
-│ └── WA_Fn-UseC_-HR-Employee-Attrition.csv
-│
-├── images/
-│ └── part1/
-│ ├── (Sub-folders covering images for Decision_tree, Logistic_regression, Random_forest, SVM, XG_Boost)
-│ ├── Class_importance.png
-│ ├── part1_main.png    (Logistic Regression performs the best)
-│ └── part1_XG.png    (Without Logistic regression XG Boost performs better)
-│ └── part2/
-│ ├── salary_distribution.png (KDE plot comparing salary distributions)
-│ └── part3/
-│
-├── src/
-│ └── part1/
-│ ├── evaluation.py   (To evaluate)
-│ ├── p1_DT.py   (Decision Tree)
-│ ├── p1_LG.py   (Logistic Regression)
-│ ├── p1_RF.py   (Random Forest)
-│ ├── p1_RF_smt.py   (Random Forest + SMOTE)
-│ ├── p1_SVM.py   (SVM)
-│ ├── p1_XG.py   (XGBoost)
-│ ├── part1lg_output.txt   (Logistic Regression Output)
-│ └── part1XG_output.txt   (XGBoost Output)
-│ └── part2/
-│ ├── augmented_salary_data.csv     (Augmented dataset with future salary predictions)
-│ └── p2.py     (Simulate Future Salaries)
+---
 
-```
+### Objective
+
+Select and apply the optimal stay/leave decision threshold using probabilities from Part 1, then visualize the results.
+
+---
+
+### Dataset
+
+* `src/part1/part1lg_output.txt`: `EmployeeIndex`, `Attrition_Probability`
+* `dataset/WA_Fn-UseC_-HR-Employee-Attrition.csv`: `Attrition` (Yes/No)
+
+---
+
+### Preprocessing Steps
+
+1. Load probabilities and compute `P_stay = 1 - Attrition_Probability`.
+2. Map `Attrition` → `y_true` (1=stayed, 0=left) for matching indices.
+
+---
+
+### Threshold Selection Method
+
+* Sweep thresholds 0.00–1.00 (0.01 step).
+* Compute accuracy, precision, recall, F1 at each step.
+* Choose threshold maximizing F1-score.
+
+---
+
+### Performance
+
+Best F1 threshold: `th = 0.XX` (F1=0.XXX, Precision=0.XXX, Recall=0.XXX)
+
+---
+
+### Evaluation Metrics
+
+* Accuracy, Precision, Recall, F1-Score
+
+---
+
+### Python Libraries Used
+
+* pandas, numpy
+* scikit-learn (precision\_score, recall\_score, f1\_score, accuracy\_score)
+* matplotlib
+
+## Part 5: Expected Salary Loss Calculation
+
+---
+
+### Objective
+
+Compute per-employee expected salary loss based on stay probabilities (Part 4) and two salary prediction methods (fixed increment and performance-based).
+
+---
+
+### Dataset & Inputs
+
+* **Stay Probabilities:** `src/part4/likely_to_stay_salaries.csv` (columns: `EmployeeIndex`, `P_stay`)
+* **Fixed-Increment Predictions:** `src/part3/RandomForest/Predicted_FutureSalary_FromIncrement.csv`
+* **Performance-Based Predictions:** `src/part3/SVR/Linear/performancebased.csv`
+
+---
+
+### Preprocessing Steps
+
+1. Load stay probabilities into `df_prob`.
+2. Read both salary prediction DataFrames (`df_fixed`, `df_perf`).
+3. Detect salary columns via keyword matching (`increment`, `perf`).
+
+---
+
+### Expected Loss Computation
+
+1. Merge `df_prob` with each salary DataFrame on `EmployeeIndex`.
+2. Compute `P_leave = 1 - P_stay` and `ExpectedLoss = P_leave * PredictedSalary`.
+3. Sum `ExpectedLoss` to obtain total expected loss per method.
+
+---
+
+### Output
+
+* **Console:**
+
+  * Detected salary column names.
+  * Total expected loss for fixed and performance approaches (in ₹).
+* **CSV Files:**
+
+  * `expected_loss_fixed.csv`
+  * `expected_loss_performance.csv`
+
+---
+
+## Python Libraries Used
+
+* pandas
+* pathlib
+* sys
