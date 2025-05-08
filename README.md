@@ -71,7 +71,10 @@ hr/
 │
 ├── images/
 │ └── part1/
-│ └── [confusion matrices, ROC curves, metric plots]
+│ └── (Sub-folders covering images for Decision_tree, Logistic_regression, Random_forest, SVM, XG_Boost)
+| └── Class_importance.png
+| └── part1_main.png    (Logistic Regression performs the best)
+| └── part1_XG.png    (Without Logistic regression XG Boost performs better)
 │
 ├── src/
 │ └── part1/
