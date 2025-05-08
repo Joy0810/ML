@@ -1,5 +1,15 @@
 #  Multi-Step Regression + Classification for Employee Attrition & Salary Estimation
 
+## Team Member Contributions (With Contribution Percentage)
+
+- **Tharun Varma Dendukuri**: Worked on the theory for the entire project and prepared the report (20%)
+- **L Joy Nirantar**: Worked on the theory and code for Part 1 and Part 2 (20%)
+- **Vaideesh K**: Worked on the theory and code for Part 3 (20%)
+- **Arjun Krishnan**: Worked on the theory and code for Part 3 (20%)
+- **Parth Vijay Nandanwar**: Worked on the theory and code for Part 4 and Part 5 (20%)
+ 
+---
+
 ## Folder Structure:
 
 ---
