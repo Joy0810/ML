@@ -9,14 +9,10 @@ import seaborn as sns
 import xgboost as xgb
 from xgboost import XGBClassifier
 
-# Load dataset
 df = pd.read_csv("../../dataset/WA_Fn-UseC_-HR-Employee-Attrition.csv")
-
-# Label Encoding Attrition
 le = LabelEncoder()
-df['Attrition'] = le.fit_transform(df['Attrition'])  # Yes -> 1, No -> 0
+df['Attrition'] = le.fit_transform(df['Attrition'])
 
-# Visualize class imbalance
 sns.countplot(x='Attrition', data=df)
 plt.title("Attrition Class Distribution")
 plt.xticks([0, 1], ['No', 'Yes'])
@@ -25,26 +21,18 @@ plt.ylabel("Count")
 plt.show()
 
 df = df.drop(['EmployeeNumber', 'Over18', 'StandardHours', 'EmployeeCount'], axis=1)
-# One-hot encode categorical features
 df = pd.get_dummies(df, drop_first=True)
 
-# Split features and labels
 X = df.drop("Attrition", axis=1)
 y = df["Attrition"]
 
-# Train-test split with stratification
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-# Apply SMOTE only on training data
 smote = SMOTE(random_state=42)
 X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
 
-# XGBoost Classifier
 xgb_model = XGBClassifier(random_state=42, eval_metric='logloss')
 
-# Parameter grid for XGBoost
 xgb_param_grid = {
     'n_estimators': [100, 200],
     'max_depth': [3, 5],
@@ -54,7 +42,6 @@ xgb_param_grid = {
     'scale_pos_weight': [1, 2]
 }
 
-# Randomized search
 xgb_random_search = RandomizedSearchCV(
     estimator=xgb_model,
     param_distributions=xgb_param_grid,
@@ -68,21 +55,16 @@ xgb_random_search = RandomizedSearchCV(
 
 xgb_random_search.fit(X_train_smote, y_train_smote)
 
-# Best XGBoost parameters
 print("Best Parameters for XGBoost:\n", xgb_random_search.best_params_)
 
-# Best model
 xgb_best_model = xgb_random_search.best_estimator_
 
-# Predictions using XGBoost
 y_pred_xgb = xgb_best_model.predict(X_test)
 y_proba_xgb = xgb_best_model.predict_proba(X_test)[:, 1]
 
-# Evaluation for XGBoost
 print("XGBoost - Classification Report:\n", classification_report(y_test, y_pred_xgb))
 print("XGBoost - ROC AUC Score:", roc_auc_score(y_test, y_proba_xgb))
 
-# Confusion Matrix for XGBoost
 conf_matrix_xgb = confusion_matrix(y_test, y_pred_xgb)
 plt.figure(figsize=(6, 4))
 sns.heatmap(conf_matrix_xgb, annot=True, fmt='d', cmap='Blues', xticklabels=['No', 'Yes'], yticklabels=['No', 'Yes'])
@@ -91,12 +73,10 @@ plt.xlabel('Predicted')
 plt.ylabel('Actual')
 plt.show()
 
-# ROC Curve for XGBoost
 RocCurveDisplay.from_estimator(xgb_best_model, X_test, y_test)
 plt.title('ROC Curve - XGBoost')
 plt.show()
 
-# Feature Importance for XGBoost
 importances_xgb = pd.Series(xgb_best_model.feature_importances_, index=X.columns)
 top_features_xgb = importances_xgb.sort_values(ascending=False).head(10)
 
@@ -108,7 +88,6 @@ plt.ylabel("Feature")
 plt.tight_layout()
 plt.show()
 
-# Save predicted attrition probabilities
 final_model = xgb_best_model
 X_all = df.drop("Attrition", axis=1)
 proba_all = final_model.predict_proba(X_all)[:, 1]
