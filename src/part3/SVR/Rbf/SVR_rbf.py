@@ -6,24 +6,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_percentage_error, r2_score
 
-# Load dataset
-df = pd.read_csv("augmented_salary_data.csv")
 
-# Drop irrelevant columns
+df = pd.read_csv("augmented_salary_data.csv")
 drop_cols = ["EmployeeCount", "EmployeeNumber", "Over18", "StandardHours", "Attrition"]
 df_cleaned = df.drop(columns=drop_cols)
 
-# One-hot encode categorical features
 df_encoded = pd.get_dummies(df_cleaned, drop_first=True)
 
-# Define features and target
 X = df_encoded.drop(columns=["Increment_PerformanceBased", "FutureSalary_PerformanceBased"])
 y_inc = df_encoded["Increment_PerformanceBased"]
 y_sal = df_encoded["FutureSalary_PerformanceBased"]
 
-# -------------------------------
-# Model A: Predicting FutureSalary_PerformanceBased
-# -------------------------------
+
 X_train_sal, X_test_sal, y_train_sal, y_test_sal = train_test_split(X, y_sal, test_size=0.2, random_state=42)
 scaler_sal = StandardScaler()
 X_train_sal_scaled = scaler_sal.fit_transform(X_train_sal)
@@ -37,14 +31,12 @@ r2_sal = r2_score(y_test_sal, y_pred_sal)
 rmse_sal = np.sqrt(mean_squared_error(y_test_sal, y_pred_sal))
 mape_sal = mean_absolute_percentage_error(y_test_sal, y_pred_sal)
 
-# Save predictions
 df_test_sal = pd.DataFrame({
     "Actual_FutureSalary_PerformanceBased": y_test_sal.values,
     "Predicted_FutureSalary_PerformanceBased": y_pred_sal
 })
 df_test_sal.to_csv("svr_predicted_futuresalary_performance_based.csv", index=False)
 
-# Plot
 plt.figure(figsize=(8, 6))
 plt.scatter(y_test_sal, y_pred_sal, alpha=0.6, edgecolors='k')
 plt.plot([y_test_sal.min(), y_test_sal.max()], [y_test_sal.min(), y_test_sal.max()], 'r--')
@@ -56,9 +48,6 @@ plt.tight_layout()
 plt.savefig("svr_performance_based_actual_vs_predicted.png")
 plt.close()
 
-# -------------------------------
-# Model B: Predicting Increment_PerformanceBased, then multiply with MonthlyIncome
-# -------------------------------
 X_train_inc, X_test_inc, y_train_inc, y_test_inc = train_test_split(X, y_inc, test_size=0.2, random_state=42)
 scaler_inc = StandardScaler()
 X_train_inc_scaled = scaler_inc.fit_transform(X_train_inc)
@@ -68,7 +57,6 @@ svr_inc = SVR(kernel='rbf', C=1000, epsilon=0.2, gamma=0.01)
 svr_inc.fit(X_train_inc_scaled, y_train_inc)
 y_pred_inc = svr_inc.predict(X_test_inc_scaled)
 
-# Multiply predicted increments with MonthlyIncome to simulate FutureSalary
 monthly_income_test = df_encoded.loc[y_test_inc.index, 'MonthlyIncome']
 y_pred_salary_from_inc = monthly_income_test * y_pred_inc
 y_actual_salary_from_inc = df_encoded.loc[y_test_inc.index, 'FutureSalary_PerformanceBased']
@@ -77,7 +65,6 @@ r2_inc_based = r2_score(y_actual_salary_from_inc, y_pred_salary_from_inc)
 rmse_inc_based = np.sqrt(mean_squared_error(y_actual_salary_from_inc, y_pred_salary_from_inc))
 mape_inc_based = mean_absolute_percentage_error(y_actual_salary_from_inc, y_pred_salary_from_inc)
 
-# Save predictions
 df_test_inc = pd.DataFrame({
     "Actual_FutureSalary": y_actual_salary_from_inc.values,
     "Predicted_FutureSalary_from_Increment": y_pred_salary_from_inc
@@ -96,9 +83,7 @@ plt.tight_layout()
 plt.savefig("svr_increment_based_salary_actual_vs_predicted.png")
 plt.close()
 
-# -------------------------------
-# Print Evaluation
-# -------------------------------
+
 print("💰 SVR Model A: FutureSalary_PerformanceBased")
 print(f"R² Score : {r2_sal:.4f}")
 print(f"RMSE     : {rmse_sal:.2f}")

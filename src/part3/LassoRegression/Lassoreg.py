@@ -6,13 +6,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_percentage_error
 import matplotlib.pyplot as plt
 
-#Load data from csv file
 df = pd.read_csv("augmented_salary_data.csv")
-
-#Encode categorical variables using one-hot encoding
 df_encoded = pd.get_dummies(df, drop_first=True)
 
-#Selecting features for the model
 features = ['JobInvolvement', 'Education', 'JobSatisfaction',
             'MaritalStatus_Married', 'TotalWorkingYears', 'JobLevel',
             'EnvironmentSatisfaction', 'JobRole_Research Director',
@@ -21,25 +17,17 @@ features = ['JobInvolvement', 'Education', 'JobSatisfaction',
 
 X = df_encoded[features]
 
-#Scale features
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-#Training model using FutureSalary_PerformanceBased
-
-#Target variable
 y_performance = df_encoded['FutureSalary_PerformanceBased']
-
-#Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_performance, test_size=0.2, random_state=23)
 
-#Lasso with cross-validation
 lasso_cv_pb = LassoCV(cv=5, random_state=42)
 lasso_cv_pb.fit(X_train, y_train)
 
 print("Best alpha value for PerformanceBased salary:", lasso_cv_pb.alpha_)
 
-#Predictions and metrics
 y_pred_performance = lasso_cv_pb.predict(X_test)
 r2_performance = r2_score(y_test, y_pred_performance)
 rmse_performance = np.sqrt(mean_squared_error(y_test, y_pred_performance))
@@ -50,21 +38,14 @@ print(f"R² Score       : {r2_performance:.4f}")
 print(f"RMSE           : {rmse_performance:.2f}")
 print(f"MAPE            : {mape_performance:.2%}")
 
-#Training model using FutureSalary_FixedGrowth
-
-#Target variable
 y_fixedgrowth = df_encoded['FutureSalary_FixedGrowth']
-
-#Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_fixedgrowth, test_size=0.2, random_state=23)
 
-#Lasso with cross-validation
 lasso_cv_fg = LassoCV(cv=5, random_state=42)
 lasso_cv_fg.fit(X_train, y_train)
 
 print("Best alpha value for FixedGrowth salary:", lasso_cv_fg.alpha_)
 
-#Predictions and metrics
 y_pred_fixedgrowth = lasso_cv_fg.predict(X_test)
 r2_fixedgrowth = r2_score(y_test, y_pred_fixedgrowth)
 rmse_fixedgrowth = np.sqrt(mean_squared_error(y_test, y_pred_fixedgrowth))
@@ -75,7 +56,6 @@ print(f"R² Score       : {r2_fixedgrowth:.4f}")
 print(f"RMSE           : {rmse_fixedgrowth:.2f}")
 print(f"MAPE            : {mape_fixedgrowth:.2%}")
 
-#Printing Feature Coefficients for both models
 print("\nFeature Coefficients for PerformanceBased Salary:")
 coef_performance = pd.Series(lasso_cv_pb.coef_, index=features)
 print(coef_performance.sort_values())
@@ -84,20 +64,14 @@ print("\nFeature Coefficients for FixedGrowth Salary:")
 coef_fixedgrowth = pd.Series(lasso_cv_fg.coef_, index=features)
 print(coef_fixedgrowth.sort_values())
 
-# Predict FutureSalary_PerformanceBased using the trained model
 y_pred_performance_all = lasso_cv_pb.predict(X_scaled)
-
-# Predict FutureSalary_FixedGrowth using the trained model
 y_pred_fixedgrowth_all = lasso_cv_fg.predict(X_scaled)
 
-# Add the predicted values as new columns in the original dataset
 df['Predicted_FutureSalary_PerformanceBased'] = y_pred_performance_all
 df['Predicted_FutureSalary_FixedGrowth'] = y_pred_fixedgrowth_all
 
-# Save to a new CSV file
 df.to_csv("predicted_salaries_part3_lasso.csv", index=False)
 
-# Plotting performance based future salaries
 plt.figure(figsize=(8, 5))
 plt.scatter(y_test, y_pred_performance, color='skyblue', edgecolor='k')
 plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r-')
@@ -109,7 +83,6 @@ plt.tight_layout()
 plt.show()
 plt.close()
 
-# Plotting fixed growth future salaries
 plt.figure(figsize=(8, 5))
 plt.scatter(y_test, y_pred_fixedgrowth, color='orange', edgecolor='k')
 plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r-')
@@ -121,7 +94,6 @@ plt.tight_layout()
 plt.show()
 plt.close()
 
-# Plotting Feature Coefficients PerformanceBased
 plt.figure(figsize=(10, 5))
 coef_performance.sort_values().plot(kind='barh', color='skyblue', edgecolor='black')
 plt.title("Lasso Coefficients - PerformanceBased Salary")
@@ -130,7 +102,6 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
-# Plotting Feature Coefficients FixedGrowth
 plt.figure(figsize=(10, 5))
 coef_fixedgrowth.sort_values().plot(kind='barh', color='orange', edgecolor='black')
 plt.title("Lasso Coefficients - FixedGrowth Salary")
