@@ -5,17 +5,17 @@
 ---
 
 ```
-hr/
+ML/
 ├── dataset/
 │   └── WA_Fn-UseC_-HR-Employee-Attrition.csv
 │
 ├── images/
 │   ├── part1/
-│   │   ├── Decision_tree/…
-│   │   ├── Logistic_regression/…
-│   │   ├── Random_forest/…
-│   │   ├── SVM/…
-│   │   ├── XG_Boost/…
+│   │   ├── Decision_tree/
+│   │   ├── Logistic_regression/
+│   │   ├── Random_forest/
+│   │   ├── SVM/
+│   │   ├── XG_Boost/
 │   │   ├── Class_importance.png
 │   │   ├── part1_main.png
 │   │   └── part1_XG.png
@@ -30,31 +30,68 @@ hr/
 │       ├── FixedBasedLoss.png
 │       └── performanceBasedLoss.png
 │
-└── src/
-    ├── part1/
-    │   ├── evaluation.py
-    │   ├── p1_DT.py
-    │   ├── p1_LG.py
-    │   ├── p1_RF.py
-    │   ├── p1_RF_smt.py
-    │   ├── p1_SVM.py
-    │   ├── p1_XG.py
-    │   ├── part1lg_output.txt
-    │   └── part1XG_output.txt
-    │
-    ├── part2/
-    │   ├── augmented_salary_data.csv
-    │   └── p2.py
-    │
-    ├── part4/
-    │   ├── likely_to_stay_salaries.csv
-    │   └── likely_to_stay.py
-    │
-    └── part5/
-        ├── expected_loss_fixed.csv
-        ├── expected_loss_performance.csv
-        ├── expectedLoss.py
-        └── plot_expected_loss.py
+├── src/
+│   ├── part1/
+│   │   ├── evaluation.py
+│   │   ├── p1_DT.py
+│   │   ├── p1_LG.py
+│   │   ├── p1_RF.py
+│   │   ├── p1_RF_smt.py
+│   │   ├── p1_SVM.py
+│   │   ├── p1_XG.py
+│   │   ├── part1lg_output.txt
+│   │   └── part1XG_output.txt
+│   │
+│   ├── part2/
+│   │   ├── augmented_salary_data.csv
+│   │   └── p2.py
+│   │
+│   ├── part3/
+│   │   ├── LassoRegression/
+│   │   │   ├── Lassoreg.py
+│   │   │   └── predicted_salaries_part3_lasso.csv
+│   │   │
+│   │   ├── RandomForest/
+│   │   │   ├── RandomForest.PY
+│   │   │   ├── Predicted_FutureSalary_FromIncrement.csv
+│   │   │   └── Predicted_FutureSalary_PerformanceBased.csv
+│   │   │
+│   │   ├── Ridgereg.py
+│   │   |   ├── ridgereg.py
+│   │   |   ├── predicted_salaries_part3_ridge.csv
+│   │   │
+│   │   └── SVR/
+│   │       ├── augmented_salary_data.csv
+│   │       ├── eval_fg.py
+│   │       ├── eval_pb.py
+│   │       ├── finaleval.txt
+│   │       ├── Linear/
+│   │       │   ├── incrementbased.csv
+│   │       │   ├── performancebased.csv
+│   │       │   └── SVR_linear.py
+│   │       │
+│   │       ├── Polynomial/
+│   │       │   ├── svr_poly_predicted_futuresalary_from_increment.csv
+│   │       │   ├── svr_poly_predicted_futuresalary_performance_based.csv
+│   │       │   └── SVR_poly.PY
+│   │       │
+│   │       └── Rbf/
+│   │           ├── svr_predicted_futuresalary_from_increment.csv
+│   │           ├── svr_predicted_futuresalary_performance_based.csv
+│   │           └── SVR_rbf.py
+│   │
+│   ├── part4/
+│   │   ├── likely_to_stay.py
+│   │   └── likely_to_stay_salaries.csv
+│   │
+│   └── part5/
+│       ├── expected_loss_fixed.csv
+│       ├── expected_loss_performance.csv
+│       ├── expectedLoss.py
+│       └── plot_expected_loss.py
+│
+└── README.md
+
 
 ```
 ---
