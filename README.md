@@ -86,7 +86,7 @@ hr/
 │ ├── p1_SVM.py   (SVM)
 │ ├── p1_XG.py   (XGBoost)
 │ ├── part1lg_output.txt   (Logistic Regression Output)
-│ └── part1XG_output.txt   (XGBoost 
+│ └── part1XG_output.txt   (XGBoost Output)
 ```
 ## 📦 Python Libraries Used (For Part 1)
 
