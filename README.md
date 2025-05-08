@@ -46,7 +46,7 @@ The goal of Part 1 is to build and evaluate multiple classification models to pr
 
 ---
 
-### Model Performance
+### Model Performance (Part 1)
 - Both **Logistic Regression** and **XGBoost** showed the best performance in predicting employee attrition. However, **Logistic Regression** outperformed **XGBoost** by a slight margin, making it the more reliable model for this classification task.
 
 ---
@@ -61,33 +61,6 @@ The goal of Part 1 is to build and evaluate multiple classification models to pr
 
 ---
 
-##  Folder Structure Overview
-
-```
-hr/
-│
-├── dataset/
-│ └── WA_Fn-UseC_-HR-Employee-Attrition.csv
-│
-├── images/
-│ └── part1/
-│ └── (Sub-folders covering images for Decision_tree, Logistic_regression, Random_forest, SVM, XG_Boost)
-| └── Class_importance.png
-| └── part1_main.png    (Logistic Regression performs the best)
-| └── part1_XG.png    (Without Logistic regression XG Boost performs better)
-│
-├── src/
-│ └── part1/
-│ ├── evaluation.py   (To evaluate)
-│ ├── p1_DT.py   (Decision Tree)
-│ ├── p1_LG.py   (Logistic Regression)
-│ ├── p1_RF.py   (Random Forest)
-│ ├── p1_RF_smt.py   (Random Forest + SMOTE)
-│ ├── p1_SVM.py   (SVM)
-│ ├── p1_XG.py   (XGBoost)
-│ ├── part1lg_output.txt   (Logistic Regression Output)
-│ └── part1XG_output.txt   (XGBoost Output)
-```
 ## 📦 Python Libraries Used (For Part 1)
 
 - **Data Manipulation**: 
@@ -118,3 +91,86 @@ hr/
 
 - **Boosting**:
     - `xgboost`
+
+ ---
+
+# Multi-Step Regression + Classification for Employee Attrition & Salary Estimation
+
+## Part 2: Simulating Future Salaries (Data Augmentation)
+
+---
+
+## Objective
+The goal of Part 2 is to simulate future salary predictions for employees based on two growth models:
+1. **Fixed Growth Increment**: A uniform salary increase (8%) applied to all employees.
+2. **Performance-Based Growth Increment**: Salary increase based on an employee’s performance rating.
+
+Additionally, a **Linear Regression** model is used to analyze the relationship between an employee’s **Performance Rating** and their **simulated future salary**.
+
+---
+
+## Dataset
+- **File Path:** `dataset/WA_Fn-UseC_-HR-Employee-Attrition.csv`
+- **Features:** Includes attributes like `MonthlyIncome`, `PerformanceRating`, etc.
+- **Target Column:** Simulated future salaries based on fixed growth and performance-based increments.
+
+---
+
+## Simulation Steps
+1. **Fixed Growth Increment**: 
+   - An 8% increase is applied uniformly to all employees’ monthly income, with added noise (±3%) for realistic simulation.
+   
+2. **Performance-Based Growth Increment**:
+   - Employees with a performance rating of 4 receive a 10% increase, and those with lower ratings receive a 5% increase. Noise is also added to this model.
+
+3. **Linear Regression**:
+   - A **Linear Regression** model is built to explore the relationship between **Performance Rating** and **simulated future salary**.
+
+---
+
+## Simulation Results
+- Both **Fixed Growth** and **Performance-Based Growth** models produce future salary predictions, which are saved in a new dataset for further analysis.
+- The **linear regression model** reveals how performance ratings influence salary increments in the performance-based model.
+
+---
+
+## Model Performance (Part 2)
+- The simulation provides future salary predictions based on both growth models. **Performance-Based Growth** is more dynamic as it accounts for individual performance ratings, while the **Fixed Growth Increment** offers a simpler, uniform approach.
+- The **Linear Regression** model successfully identifies the correlation between **Performance Rating** and the **future salary** prediction under the performance-based model.
+
+---
+
+###  Folder Structure Overview
+
+```
+hr/
+│
+├── dataset/
+│ └── WA_Fn-UseC_-HR-Employee-Attrition.csv
+│
+├── images/
+│ └── part1/
+│ ├── (Sub-folders covering images for Decision_tree, Logistic_regression, Random_forest, SVM, XG_Boost)
+│ ├── Class_importance.png
+│ ├── part1_main.png    (Logistic Regression performs the best)
+│ └── part1_XG.png    (Without Logistic regression XG Boost performs better)
+│ └── part2/
+│ ├── salary_distribution.png (KDE plot comparing salary distributions)
+│ └── part3/
+│
+├── src/
+│ └── part1/
+│ ├── evaluation.py   (To evaluate)
+│ ├── p1_DT.py   (Decision Tree)
+│ ├── p1_LG.py   (Logistic Regression)
+│ ├── p1_RF.py   (Random Forest)
+│ ├── p1_RF_smt.py   (Random Forest + SMOTE)
+│ ├── p1_SVM.py   (SVM)
+│ ├── p1_XG.py   (XGBoost)
+│ ├── part1lg_output.txt   (Logistic Regression Output)
+│ └── part1XG_output.txt   (XGBoost Output)
+│ └── part2/
+│ ├── augmented_salary_data.csv     (Augmented dataset with future salary predictions)
+│ └── p2.py     (Simulate Future Salaries)
+
+```
