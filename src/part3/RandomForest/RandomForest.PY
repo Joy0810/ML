@@ -120,3 +120,29 @@ print(f"R² Score  : {r2_inc:.4f}")
 print(f"RMSE      : {rmse_inc:.2f}")
 print(f"MAPE      : {mape_inc:.2%}")
 print("Saved: rf_predictions_increment_based.csv & plot")
+
+
+# Predict for all rows
+X_all_sal_scaled = scaler.transform(X)  # Use full X scaled with same scaler
+all_pred_sal = rf_sal.predict(X_all_sal_scaled)
+
+# Save only predictions
+pd.DataFrame({
+    "Predicted_FutureSalary_PerformanceBased": all_pred_sal
+}).to_csv("Predicted_FutureSalary_PerformanceBased", index=False)
+
+print("✅ Saved all Model A predictions ")
+
+# Predict for all rows
+X_all_inc_scaled = scaler.transform(X)  # Same scaler
+all_pred_inc = rf_inc.predict(X_all_inc_scaled)
+
+# Multiply with monthly income from all rows
+all_pred_salary_inc = all_pred_inc * monthly_income
+
+# Save only predictions
+pd.DataFrame({
+    "Predicted_FutureSalary_FromIncrement": all_pred_salary_inc
+}).to_csv("Predicted_FutureSalary_FromIncrement", index=False)
+
+print("✅ Saved all Model B predictions ")

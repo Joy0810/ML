@@ -118,3 +118,38 @@ print(f"R² Score : {r2_inc_based:.4f}")
 print(f"RMSE     : {rmse_inc_based:.2f}")
 print(f"MAPE     : {mape_inc_based:.2%}")
 print("Saved: linearsvr_predicted_futuresalary_from_increment.csv & plot")
+# Predict future salary for the entire dataset
+X_all_scaled = scaler_sal.transform(X)  # Use full X, not just X_test
+y_all_pred_sal = svr_sal.predict(X_all_scaled)
+
+# Save all predictions
+df_all_sal = df_encoded.copy()
+df_all_sal["Predicted_FutureSalary_PerformanceBased"] = y_all_pred_sal
+df_all_sal.to_csv("linearsvr_all_predicted_futuresalary.csv", index=False)
+
+# Predict future salary for all rows
+X_all_scaled = scaler_sal.transform(X)
+y_all_pred_sal = svr_sal.predict(X_all_scaled)
+
+# Save only the predicted salaries
+pd.DataFrame({
+    "Predicted_FutureSalary_PerformanceBased": y_all_pred_sal
+}).to_csv("predicted_salaries_model_a.csv", index=False)
+
+print("✅ Saved: predicted_salaries_model_a.csv (only predicted salaries from Model A)")
+
+# Simulate full salary predictions
+# Predict increment for all rows
+X_all_inc_scaled = scaler_inc.transform(X)
+y_all_pred_inc = svr_inc.predict(X_all_inc_scaled)
+
+# Simulate future salary: increment × MonthlyIncome
+monthly_income_all = df_encoded["MonthlyIncome"]
+y_all_pred_salary_inc = y_all_pred_inc * monthly_income_all
+
+# Save only the predicted salaries
+pd.DataFrame({
+    "Predicted_FutureSalary_from_Increment": y_all_pred_salary_inc
+}).to_csv("predicted_salaries_model_b.csv", index=False)
+
+print("✅ Saved: predicted_salaries_model_b.csv (only predicted salaries from Model B)")

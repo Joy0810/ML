@@ -32,7 +32,7 @@ MAE            : 170.46
 
 SVR
 
-Rf 
+Rbf 
 Model A:Using performance based growth as actual 
 R² Score : 0.9831
 RMSE     : 644.41
