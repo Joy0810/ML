@@ -17,7 +17,6 @@
 ```
 ML/
 ├── dataset/
-│   └── WA_Fn-UseC_-HR-Employee-Attrition.csv
 │
 ├── images/
 │   ├── part1/
@@ -26,12 +25,20 @@ ML/
 │   │   ├── Random_forest/
 │   │   ├── SVM/
 │   │   ├── XG_Boost/
-│   │   ├── Class_importance.png
-│   │   ├── part1_main.png
-│   │   └── part1_XG.png
+│   │   │   ├── Class_importance.png
+│   │   │   ├── part1_main.png
+│   │   │   └── part1_XG.png
 │   │
 │   ├── part2/
 │   │   └── salary_distribution.png
+│   │
+│   ├── part3/
+│   │   ├── eval_fg/
+│   │   ├── eval_pb/
+│   │   └── images_LR_RF_RR_SVR/
+│   │       ├── linearsvr_performance_based_actual_vs_predicted.png
+│   │       ├── metric importance.jpeg
+│   │       └── rf_modelA_futuresalary_actual_vs_predicted.png
 │   │
 │   ├── part4/
 │   │   └── StayVsLeave.png
@@ -66,9 +73,9 @@ ML/
 │   │   │   ├── Predicted_FutureSalary_FromIncrement.csv
 │   │   │   └── Predicted_FutureSalary_PerformanceBased.csv
 │   │   │
-│   │   ├── Ridgereg.py
-│   │   |   ├── ridgereg.py
-│   │   |   ├── predicted_salaries_part3_ridge.csv
+│   │   ├── Ridgereg.py/
+│   │   │   ├── ridgereg.py
+│   │   │   └── predicted_salaries_part3_ridge.csv
 │   │   │
 │   │   └── SVR/
 │   │       ├── augmented_salary_data.csv
@@ -101,8 +108,6 @@ ML/
 │       └── plot_expected_loss.py
 │
 └── README.md
-
-
 ```
 ---
 
