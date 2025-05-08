@@ -334,7 +334,7 @@ Select and apply the optimal stay/leave decision threshold using probabilities f
 
 ### Performance
 
-Best F1 threshold: `th = 0.XX` (F1=0.XXX, Precision=0.XXX, Recall=0.XXX)
+Best F1 threshold: `th = 0.57` (F1=0.939, Precision=0.916, Recall=0.964)
 
 ---
 
